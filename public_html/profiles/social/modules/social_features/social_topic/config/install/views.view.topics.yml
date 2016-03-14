@@ -5,8 +5,10 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - node.type.topic
+    - taxonomy.vocabulary.topic_types
   module:
     - node
+    - taxonomy
     - user
 id: topics
 label: Topics
@@ -204,18 +206,26 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-          is_grouped: false
+          is_grouped: true
           group_info:
-            label: ''
+            label: 'has the publish status of'
             description: ''
-            identifier: ''
+            identifier: status
             optional: true
             widget: select
             multiple: false
             remember: false
             default_group: All
             default_group_multiple: {  }
-            group_items: {  }
+            group_items:
+              1:
+                title: Published
+                operator: '='
+                value: '1'
+              2:
+                title: 'Not published'
+                operator: '='
+                value: '0'
           plugin_id: boolean
           entity_type: node
           entity_field: status
@@ -293,6 +303,7 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
+        - user
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
@@ -328,6 +339,7 @@ display:
         - url.query_args
         - 'url.query_args:sort_by'
         - 'url.query_args:sort_order'
+        - user
         - 'user.node_grants:view'
         - user.permissions
       tags: {  }
