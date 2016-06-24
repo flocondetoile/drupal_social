@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\social_group\Plugin\Block\GroupAddEventBlock.
- */
-
 namespace Drupal\social_group\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
@@ -21,7 +16,6 @@ use Drupal\Core\Link;
  */
 class GroupAddEventBlock extends BlockBase {
 
-
   /**
    * {@inheritdoc}
    */
@@ -30,7 +24,7 @@ class GroupAddEventBlock extends BlockBase {
 
     $group_id = \Drupal::routeMatch()->getParameter('group');
 
-    if(!empty($group_id)){
+    if (!empty($group_id)) {
       $url = Url::fromUserInput("/group/$group_id/node/create/event");
 
       $link_options = array(
@@ -48,6 +42,12 @@ class GroupAddEventBlock extends BlockBase {
       $url->setOptions($link_options);
 
       $build['content'] = Link::fromTextAndUrl(t('Create Event'), $url)->toRenderable();
+
+      // @TODO Fix cache tags!
+      // Disable cache for this block to get correct group_id in path
+      $build['#cache'] = array(
+        'max-age' => 0,
+      );
     }
 
     return $build;

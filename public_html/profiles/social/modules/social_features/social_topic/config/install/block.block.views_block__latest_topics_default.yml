@@ -11,7 +11,7 @@ dependencies:
 id: views_block__latest_topics_default
 theme: socialbase
 region: complementary
-weight: null
+weight: -6
 provider: null
 plugin: 'views_block:latest_topics-block_latest_topics'
 settings:
@@ -20,9 +20,10 @@ settings:
   provider: views
   label_display: visible
   views_label: ''
+  items_per_page: none
 visibility:
   request_path:
     id: request_path
-    pages: '<front>'
+    pages: "<front>\r\n/explore"
     negate: false
     context_mapping: {  }

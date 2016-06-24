@@ -4,6 +4,9 @@
  * The Social post module.
  */
 
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Component\Utility\UrlHelper;
+use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Access\AccessResult;
@@ -14,6 +17,12 @@ use Drupal\Core\Access\AccessResult;
 function social_post_form_post_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['field_recipient_user']['#attributes']['class'][] = 'browser-default';
   $form['field_visibility']['#attributes']['class'][] = 'browser-default';
+
+  // Reset title display.
+  $form['field_post']['widget'][0]['#title_display'] = '';
+
+  // Set submit button caption to Post instead of Save.
+  $form['actions']['submit']['#value'] = t('Post');
 }
 
 /**
@@ -22,6 +31,9 @@ function social_post_form_post_form_alter(&$form, FormStateInterface $form_state
  * Alter the comment_post_comment_form form.
  */
 function social_post_form_comment_post_comment_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Reset title display.
+  $form['field_comment_body']['widget'][0]['#title_display'] = '';
+
   // Set the action of the form to the current uri.
   // This needs to be done, becuase we cannot override $form['#action']
   // without breaking functionality.
@@ -38,19 +50,21 @@ function social_post_form_comment_post_comment_form_alter(&$form, FormStateInter
 }
 
 /**
- * @param $form
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *
  * Form submit for comment_post_comment_form.
+ *
+ * @param array $form
+ *   Commnent on a post form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Form state interface.
  */
 function _social_post_comment_post_comment_form_submit($form, FormStateInterface $form_state) {
   // Fetch from the form.
   $uri = $form_state->getValue('redirect_after_save');
   // Let's not trust this.
-  $uri = Drupal\Component\Utility\Html::escape($uri);
+  $uri = Html::escape($uri);
 
   // Must be a valid URL.
-  if (Drupal\Component\Utility\UrlHelper::isValid($uri)) {
+  if (UrlHelper::isValid($uri)) {
     // Get the Url from the Form value and redirect to this url.
     $url = Url::fromUserInput($uri);
     // Set redirect.
@@ -68,7 +82,7 @@ function social_post_views_data_alter(array &$data) {
       'title' => t('Post visibility access'),
       'help' => t('Enable post access for public and community posts.'),
       'field' => 'field_visibility',
-      'id' => 'post_visibility_access'
+      'id' => 'post_visibility_access',
     ),
   );
   $data['post']['post_account_stream_filter'] = array(
@@ -144,7 +158,7 @@ function social_post_preprocess_field(&$variables) {
 /**
  * Implements hook_ENTITY_TYPE_create_access().
  */
-function social_post_comment_create_access(\Drupal\Core\Session\AccountInterface $account, array $context, $entity_bundle) {
+function social_post_comment_create_access(AccountInterface $account, array $context, $entity_bundle) {
   if ($entity_bundle === 'post_comment') {
     $group = \Drupal::routeMatch()->getParameter('group');
     if ($group) {

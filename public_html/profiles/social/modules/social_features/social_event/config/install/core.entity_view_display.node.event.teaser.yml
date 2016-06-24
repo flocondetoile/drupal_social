@@ -4,24 +4,32 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.event.body
+    - field.field.node.event.field_content_visibility
     - field.field.node.event.field_event_address
     - field.field.node.event.field_event_comments
     - field.field.node.event.field_event_date
     - field.field.node.event.field_event_date_end
     - field.field.node.event.field_event_image
     - field.field.node.event.field_event_location
-    - image.style.teaser
+    - image.style.social_x_large
     - node.type.event
   module:
     - address
     - datetime
     - image
+    - options
     - user
 id: node.event.teaser
 targetEntityType: node
 bundle: event
 mode: teaser
 content:
+  field_content_visibility:
+    type: list_default
+    weight: 6
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
   field_event_address:
     type: address_default
     weight: 4
@@ -49,7 +57,7 @@ content:
     weight: 0
     label: hidden
     settings:
-      image_style: teaser
+      image_style: social_x_large
       image_link: content
     third_party_settings: {  }
   field_event_location:
